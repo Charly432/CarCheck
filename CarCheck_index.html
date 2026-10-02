@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarCheck</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#071426;color:#fff}
+.app{max-width:480px;margin:auto;min-height:100vh;padding:24px 18px 40px}.hero{text-align:center;padding:55px 10px 35px}
+.logo{font-size:42px;font-weight:800;letter-spacing:-2px}.logo span{color:#2188ff}.tagline{color:#b9c5d6;font-size:16px;line-height:1.5}
+button{width:100%;border:0;border-radius:14px;padding:16px;background:#1677ff;color:white;font-size:16px;font-weight:700}
+.card{background:#fff;color:#101828;border-radius:20px;padding:22px;margin-top:18px;box-shadow:0 12px 35px rgba(0,0,0,.2)}
+h2{margin-top:0}label{display:block;margin:14px 0 7px;font-weight:600}
+input,select{width:100%;padding:13px;border:1px solid #d6dce5;border-radius:10px;font-size:16px;background:#fff}
+.hidden{display:none}.check{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #e8ecf2}.check input{width:20px;height:20px}
+.pill{display:inline-block;padding:7px 10px;border-radius:999px;background:#eaf3ff;color:#1677ff;font-size:13px;font-weight:700}
+.back{background:#e9eef5;color:#172033;margin-bottom:10px}.small{color:#65748a;font-size:13px;line-height:1.45}
+</style>
+</head>
+<body>
+<main class="app">
+<section id="home"><div class="hero"><div class="logo">Car<span>Check</span></div>
+<p class="tagline">Achetez votre voiture usagée en connaissance de cause.</p></div>
+<button onclick="show('form')">🔍 Vérifier une voiture</button>
+<p class="small" style="text-align:center;margin-top:18px;">Version 1 — prototype gratuit</p></section>
+
+<section id="form" class="hidden"><button class="back" onclick="show('home')">← Retour</button><div class="card">
+<h2>Votre véhicule</h2>
+<label>Marque</label><input id="make" placeholder="Ex. Hyundai">
+<label>Modèle</label><input id="model" placeholder="Ex. Veloster">
+<label>Année</label><input id="year" type="number" placeholder="2016">
+<label>Moteur</label><input id="engine" placeholder="Ex. 1.6 Turbo">
+<label>Transmission</label><select id="trans"><option>Manuelle</option><option>Automatique</option><option>CVT</option><option>Je ne sais pas</option></select>
+<label>Kilométrage</label><input id="km" type="number" placeholder="60000">
+<label>Prix demandé ($)</label><input id="price" type="number" placeholder="8500">
+<button style="margin-top:20px" onclick="startCheck()">Continuer →</button>
+</div></section>
+
+<section id="checklist" class="hidden"><button class="back" onclick="show('form')">← Modifier le véhicule</button><div class="card">
+<span class="pill" id="vehicleName">Véhicule</span><h2>Inspection</h2>
+<p class="small">Coche les éléments que tu as vérifiés.</p><div id="checks"></div>
+<button style="margin-top:20px" onclick="showResult()">Voir le résultat</button>
+</div></section>
+
+<section id="result" class="hidden"><button class="back" onclick="show('checklist')">← Retour</button><div class="card">
+<span class="pill">Rapport CarCheck</span><h2 id="resultTitle"></h2><p id="resultCount"></p><hr>
+<h3>Questions à poser au vendeur</h3><ul>
+<li>As-tu les factures d'entretien?</li><li>Y a-t-il eu des réparations importantes?</li>
+<li>La voiture a-t-elle déjà été accidentée?</li><li>Y a-t-il des problèmes connus actuellement?</li>
+<li>Quand les freins et les pneus ont-ils été changés?</li></ul>
+<p class="small"><strong>Important :</strong> ce prototype ne remplace pas une inspection professionnelle.</p>
+<button onclick="show('home')">Nouvelle voiture</button>
+</div></section>
+</main>
+<script>
+const sections=["home","form","checklist","result"];
+function show(id){sections.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id))}
+const items=["Vérifier les fuites (huile, liquide de refroidissement, etc.)","Écouter les bruits anormaux du moteur","Vérifier les voyants au tableau de bord","Tester l'embrayage / la transmission","Vérifier les freins","Vérifier les pneus et leur usure","Inspecter la rouille visible","Vérifier la suspension","Tester les lumières et accessoires électriques","Faire un essai routier","Demander l'historique d'entretien","Vérifier le numéro VIN et les documents"];
+function startCheck(){const make=document.getElementById("make").value||"Voiture",model=document.getElementById("model").value||"",year=document.getElementById("year").value||"";document.getElementById("vehicleName").textContent=(`${make} ${model} ${year}`).trim();document.getElementById("checks").innerHTML=items.map(x=>`<label class="check"><input type="checkbox" class="checkBox"><span>${x}</span></label>`).join("");show("checklist")}
+function showResult(){const boxes=document.querySelectorAll(".checkBox"),done=[...boxes].filter(b=>b.checked).length;const make=document.getElementById("make").value||"Voiture",model=document.getElementById("model").value||"";document.getElementById("resultTitle").textContent=(`${make} ${model}`).trim();document.getElementById("resultCount").textContent=`${done} / ${boxes.length} éléments vérifiés.`;show("result")}
+</script>
+</body>
+</html>
